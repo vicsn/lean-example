@@ -1,6 +1,6 @@
 module
 
-public import Examples.Nsl.Refine
+public import RustExamples.Nsl.Refine
 
 /-! # Lowe's attack on Needham–Schroeder
 

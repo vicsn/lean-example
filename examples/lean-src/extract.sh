@@ -24,11 +24,11 @@ llbc="$stage/examples.llbc"
     --config 'host.rustflags=["--cfg","hax","--cfg","hax_backend_lean"]' --locked)
 
 # `hax-step` emits the extracted pre/postconditions and Aeneas step triples.
-# The completed proofs live in Examples.Merkle.
+# The completed contracts live in RustExamples.Merkle and RustExamples.MerkleAuthentication.
 "$aeneas" -backend lean -split-files -loops-to-rec -specs hax-step \
-  -extra-includes Examples.Hax -external-names hax-models.json \
-  -dest "$stage" -subdir Examples/Gen "$llbc"
-mkdir -p Examples/Gen
+  -extra-includes RustExamples.Hax -external-names hax-models.json \
+  -dest "$stage" -subdir RustExamples/Gen "$llbc"
+mkdir -p RustExamples/Gen
 for name in Types Funs Specs; do
-  cp "$stage/Examples/Gen/$name.lean" "Examples/Gen/$name.lean"
+  cp "$stage/RustExamples/Gen/$name.lean" "RustExamples/Gen/$name.lean"
 done

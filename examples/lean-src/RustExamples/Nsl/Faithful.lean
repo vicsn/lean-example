@@ -1,6 +1,6 @@
 module
 
-public import Examples.Nsl.Refine
+public import RustExamples.Nsl.Refine
 
 /-! # Faithfulness of the symbolic world
 

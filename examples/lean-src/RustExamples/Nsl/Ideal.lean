@@ -1,8 +1,8 @@
 module
 
-public import Examples.Nsl.Probability
-import Examples.Nsl.Secrecy
-import Examples.Nsl.Faithful
+public import RustExamples.Nsl.Probability
+import RustExamples.Nsl.Secrecy
+import RustExamples.Nsl.Faithful
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 

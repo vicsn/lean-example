@@ -1,12 +1,12 @@
 module
 
-public import Examples.Merkle.Lawful
-import Examples.Merkle.Verify
+public import RustExamples.Merkle.Lawful
+import RustExamples.Merkle.Verify
 
 /-! Binding: two proofs that verify for different data yield a collision.
 
 `Collides` says, in terms of the pure hash functions, which collisions
-`is_collision` accepts. If both proofs verify, `Examples.Merkle.Verify` gives
+`is_collision` accepts. If both proofs verify, `RustExamples.Merkle.Verify` gives
 two inner roots with the same size commitment, and `extract` finds a
 collision from them:
 

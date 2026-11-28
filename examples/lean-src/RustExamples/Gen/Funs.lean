@@ -2,8 +2,8 @@
 -- [examples]: function definitions
 module
 public import Aeneas
-public import Examples.Gen.Types
-public import Examples.Hax
+public import RustExamples.Gen.Types
+public import RustExamples.Hax
 @[expose] public section
 open Aeneas Aeneas.Std RustM ControlFlow Error
 set_option linter.dupNamespace false
@@ -1347,6 +1347,271 @@ def merkle.binding
         | some c => merkle.is_collision HashInst c
       else ok true
     else ok true
+
+/-- [examples::merkle_authentication::roles::client]:
+    Source: 'examples/src/merkle_authentication/roles.rs', lines 19:0-30:1
+    Visibility: public -/
+def merkle_authentication.roles.client
+  : RustM (Array merkle_authentication.roles.Client 7#usize) := do
+  ok
+    (Array.make 7#usize [
+      merkle_authentication.roles.Client.LookupVerificationKey,
+      merkle_authentication.roles.Client.ReceiveSignedRoot,
+      merkle_authentication.roles.Client.ReceiveOpening,
+      merkle_authentication.roles.Client.VerifyRootSignature,
+      merkle_authentication.roles.Client.CheckRootFromPath,
+      merkle_authentication.roles.Client.CheckIndexBounds,
+      merkle_authentication.roles.Client.LogClientAccept
+      ])
+
+/-- [examples::merkle_authentication::roles::server]:
+    Source: 'examples/src/merkle_authentication/roles.rs', lines 42:0-53:1
+    Visibility: public -/
+def merkle_authentication.roles.server
+  : RustM (Array merkle_authentication.roles.Server 7#usize) := do
+  ok
+    (Array.make 7#usize [
+      merkle_authentication.roles.Server.ReceiveAndAuthenticateEachElement,
+      merkle_authentication.roles.Server.LookupSigningKey,
+      merkle_authentication.roles.Server.ComputeRootAndLength,
+      merkle_authentication.roles.Server.GenerateSigningNonce,
+      merkle_authentication.roles.Server.SignRootAndLength,
+      merkle_authentication.roles.Server.PublishSignedRoot,
+      merkle_authentication.roles.Server.StoreElements
+      ])
+
+/-- [examples::merkle_authentication::roles::prover]:
+    Source: 'examples/src/merkle_authentication/roles.rs', lines 60:0-62:1
+    Visibility: public -/
+def merkle_authentication.roles.prover
+  : RustM (Array merkle_authentication.roles.Prover 2#usize) := do
+  ok
+    (Array.make 2#usize [
+      merkle_authentication.roles.Prover.LoadServerElements,
+      merkle_authentication.roles.Prover.SendOpeningForIndex
+      ])
+
+/-- [examples::merkle_authentication::roles::derive]:
+    Source: 'examples/src/merkle_authentication/roles.rs', lines 91:0-135:1 -/
+def merkle_authentication.roles.derive
+  {D : Type _} {Clause0_Bytes : Type _} (DeductionsInst :
+  merkle_authentication.roles.Deductions D Clause0_Bytes) (world : D)
+  (r : merkle_authentication.roles.Recipe) :
+  RustM (Option Clause0_Bytes)
+  := do
+  match r with
+  | merkle_authentication.roles.Recipe.Receive h =>
+    DeductionsInst.receive world h
+  | merkle_authentication.roles.Recipe.Literal b =>
+    let s := alloc.vec.Vec.deref b
+    let t ← DeductionsInst.literal world s
+    ok (some t)
+  | merkle_authentication.roles.Recipe.Concat a b =>
+    let o ← merkle_authentication.roles.derive DeductionsInst world a
+    match o with
+    | none => ok none
+    | some a1 =>
+      let o1 ← merkle_authentication.roles.derive DeductionsInst world b
+      match o1 with
+      | none => ok none
+      | some b1 => let t ← DeductionsInst.concat world a1 b1
+                   ok (some t)
+  | merkle_authentication.roles.Recipe.Left x =>
+    let o ← merkle_authentication.roles.derive DeductionsInst world x
+    match o with
+    | none => ok none
+    | some x1 => DeductionsInst.split world x1 true
+  | merkle_authentication.roles.Recipe.Right x =>
+    let o ← merkle_authentication.roles.derive DeductionsInst world x
+    match o with
+    | none => ok none
+    | some x1 => DeductionsInst.split world x1 false
+  | merkle_authentication.roles.Recipe.Hash x =>
+    let o ← merkle_authentication.roles.derive DeductionsInst world x
+    match o with
+    | none => ok none
+    | some x1 => let t ← DeductionsInst.hash world x1
+                 ok (some t)
+  | merkle_authentication.roles.Recipe.VerificationKey x =>
+    let o ← merkle_authentication.roles.derive DeductionsInst world x
+    match o with
+    | none => ok none
+    | some x1 => let t ← DeductionsInst.vk world x1
+                 ok (some t)
+  | merkle_authentication.roles.Recipe.Sign k n m =>
+    let o ← merkle_authentication.roles.derive DeductionsInst world k
+    match o with
+    | none => ok none
+    | some k1 =>
+      let o1 ← merkle_authentication.roles.derive DeductionsInst world n
+      match o1 with
+      | none => ok none
+      | some n1 =>
+        let o2 ← merkle_authentication.roles.derive DeductionsInst world m
+        match o2 with
+        | none => ok none
+        | some m1 => let t ← DeductionsInst.sign world k1 n1 m1
+                     ok (some t)
+partial_fixpoint
+
+/-- [examples::merkle_authentication::{impl core::clone::Clone for examples::merkle_authentication::Observation}::clone]:
+    Source: 'examples/src/merkle_authentication.rs', lines 30:9-30:14
+    Visibility: public -/
+def merkle_authentication.Observation.Insts.CoreCloneClone.clone
+  (self : merkle_authentication.Observation) :
+  RustM merkle_authentication.Observation
+  := do
+  ok self
+
+/-- Trait implementation: [examples::merkle_authentication::{impl core::clone::Clone for examples::merkle_authentication::Observation}]
+    Source: 'examples/src/merkle_authentication.rs', lines 30:9-30:14 -/
+@[reducible]
+def merkle_authentication.Observation.Insts.CoreCloneClone : core.clone.Clone
+  merkle_authentication.Observation := {
+  clone := merkle_authentication.Observation.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [examples::merkle_authentication::{impl core::marker::Copy for examples::merkle_authentication::Observation}]
+    Source: 'examples/src/merkle_authentication.rs', lines 30:16-30:20 -/
+@[reducible]
+def merkle_authentication.Observation.Insts.CoreMarkerCopy : core.marker.Copy
+  merkle_authentication.Observation := {
+  cloneInst := merkle_authentication.Observation.Insts.CoreCloneClone
+}
+
+/-- [examples::merkle_authentication::classify]:
+    Source: 'examples/src/merkle_authentication.rs', lines 52:0-67:1 -/
+def merkle_authentication.classify
+  (event : merkle_authentication.Event) (server_key_compromised : Bool) :
+  RustM merkle_authentication.Observation
+  := do
+  if server_key_compromised
+  then ok merkle_authentication.Observation.KeyCompromised
+  else
+    match event with
+    | merkle_authentication.Event.Other =>
+      ok merkle_authentication.Observation.Other
+    | merkle_authentication.Event.ServerAuthenticated b b1 =>
+      if b
+      then
+        if b1
+        then ok merkle_authentication.Observation.Authenticated
+        else ok merkle_authentication.Observation.Other
+      else ok merkle_authentication.Observation.Other
+    | merkle_authentication.Event.ClientAccept b b1 =>
+      if b
+      then
+        if b1
+        then ok merkle_authentication.Observation.Accepted
+        else ok merkle_authentication.Observation.Other
+      else ok merkle_authentication.Observation.Other
+
+/-- [examples::merkle_authentication::check_history]: loop 0:
+    Source: 'examples/src/merkle_authentication.rs', lines 87:4-95:1 -/
+@[rust_loop]
+def merkle_authentication.check_history_loop
+  {H : Type _} {S : Type _} {B : Type _} (HistoryInst :
+  merkle_authentication.History H S B) (history : H) (server : S) (element : B)
+  (i : Std.Usize) :
+  RustM Bool
+  := do
+  if i > 0#usize
+  then
+    let i1 ← i - 1#usize
+    let o ← HistoryInst.«at» history server element i1
+    match o with
+    | merkle_authentication.Observation.Other =>
+      merkle_authentication.check_history_loop HistoryInst history server
+        element i1
+    | merkle_authentication.Observation.Authenticated => ok true
+    | merkle_authentication.Observation.KeyCompromised => ok true
+    | merkle_authentication.Observation.Accepted =>
+      merkle_authentication.check_history_loop HistoryInst history server
+        element i1
+  else ok false
+partial_fixpoint
+
+/-- [examples::merkle_authentication::check_history]:
+    Source: 'examples/src/merkle_authentication.rs', lines 77:0-95:1 -/
+def merkle_authentication.check_history
+  {H : Type _} {S : Type _} {B : Type _} (HistoryInst :
+  merkle_authentication.History H S B) (history : H) (server : S) (element : B)
+  (time : Std.Usize) :
+  RustM Bool
+  := do
+  let o ← HistoryInst.«at» history server element time
+  let b ←
+    match o with
+    | merkle_authentication.Observation.Other => ok false
+    | merkle_authentication.Observation.Authenticated => ok false
+    | merkle_authentication.Observation.KeyCompromised => ok false
+    | merkle_authentication.Observation.Accepted => ok true
+  if b
+  then
+    merkle_authentication.check_history_loop HistoryInst history server element
+      time
+  else ok true
+
+/-- [examples::merkle_authentication::execute]: loop 0:
+    Source: 'examples/src/merkle_authentication.rs', lines 146:4-171:5 -/
+@[rust_loop]
+def merkle_authentication.execute_loop
+  {W : Type _} {S : Type _} {B : Type _} (ExecutionInst :
+  merkle_authentication.Execution W S B)
+  (actions : Slice (merkle_authentication.Action S)) (trace : W)
+  (i : Std.Usize) :
+  RustM W
+  := do
+  let i1 := Slice.len actions
+  if i < i1
+  then
+    let a ← Slice.index_usize actions i
+    let trace1 ←
+      match a with
+      | merkle_authentication.Action.Send r => ExecutionInst.send trace r
+      | merkle_authentication.Action.Random n => ExecutionInst.random trace n
+      | merkle_authentication.Action.GenerateKey s =>
+        ExecutionInst.generate_key trace s
+      | merkle_authentication.Action.CompromiseKey h =>
+        ExecutionInst.compromise_key trace h
+      | merkle_authentication.Action.CompromiseState h =>
+        ExecutionInst.compromise_state trace h
+      | merkle_authentication.Action.Authenticate server messages key =>
+        let s := alloc.vec.Vec.deref messages
+        ExecutionInst.authenticate trace server s key
+      | merkle_authentication.Action.ProveInclusion server state index =>
+        ExecutionInst.prove_inclusion trace server state index
+      | merkle_authentication.Action.CheckInclusion server signed_root opening
+        key =>
+        ExecutionInst.check_inclusion trace server signed_root opening key
+    let i2 ← i + 1#usize
+    merkle_authentication.execute_loop ExecutionInst actions trace1 i2
+  else ok trace
+partial_fixpoint
+
+/-- [examples::merkle_authentication::execute]:
+    Source: 'examples/src/merkle_authentication.rs', lines 143:0-173:1 -/
+def merkle_authentication.execute
+  {W : Type _} {S : Type _} {B : Type _} (ExecutionInst :
+  merkle_authentication.Execution W S B)
+  (actions : Slice (merkle_authentication.Action S)) :
+  RustM W
+  := do
+  let trace ← ExecutionInst.empty
+  merkle_authentication.execute_loop ExecutionInst actions trace 0#usize
+
+/-- [examples::merkle_authentication::client_authentication]:
+    Source: 'examples/src/merkle_authentication.rs', lines 181:0-189:1 -/
+def merkle_authentication.client_authentication
+  {W : Type _} {S : Type _} {B : Type _} (ExecutionInst :
+  merkle_authentication.Execution W S B)
+  (actions : Slice (merkle_authentication.Action S)) (server : S) (element : B)
+  (time : Std.Usize) :
+  RustM Bool
+  := do
+  let trace ← merkle_authentication.execute ExecutionInst actions
+  merkle_authentication.check_history ExecutionInst.HistoryInst trace server
+    element time
 
 /-- [examples::nsl::ADVERSARY]
     Source: 'examples/src/nsl.rs', lines 59:0-59:31

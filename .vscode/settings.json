@@ -1,0 +1,6 @@
+{
+    "files.watcherExclude": {
+        "**/.lake/**": true,
+        "**/target/**": true
+    }
+}

@@ -1,6 +1,6 @@
 module
 
-public import Examples.Nsl.Lawful
+public import RustExamples.Nsl.Lawful
 public import Mathlib.Data.Fintype.Card
 public import Mathlib.Data.Fintype.Pi
 public import Mathlib.Data.Fintype.Prod

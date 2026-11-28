@@ -2,9 +2,9 @@
 -- [examples]: specs (statements of correctness)
 module
 public import Aeneas
-public import Examples.Gen.Types
-public import Examples.Gen.Funs
-public import Examples.Hax
+public import RustExamples.Gen.Types
+public import RustExamples.Gen.Funs
+public import RustExamples.Hax
 @[expose] public section
 open Aeneas Aeneas.Std RustM ControlFlow Error
 set_option linter.dupNamespace false
@@ -88,5 +88,31 @@ def
   merkle.binding HashInst root index n1 d1 p1 n2 d2 p2
   ⦃ res =>
   (merkle.binding.post HashInst root index n1 d1 p1 n2 d2 p2 res).holds ⦄
+
+
+/-- [examples::merkle_authentication::client_authentication::post]:
+    Source: 'examples/src/merkle_authentication.rs', lines 180:16-180:49 -/
+@[reducible]
+def merkle_authentication.client_authentication.post
+  {W : Type _} {S : Type _} {B : Type _} (ExecutionInst :
+  merkle_authentication.Execution W S B)
+  (actions : Slice (merkle_authentication.Action S)) (server : S) (element : B)
+  (time : Std.Usize) (result : Bool) :
+  RustM Bool
+  := do
+  ok result
+
+def
+  merkle_authentication.client_authentication.spec {W : Type _} {S : Type _} {B
+                                                  : Type _} (ExecutionInst :
+                                                  merkle_authentication.Execution
+                                                  W S B)
+  (actions : Slice (merkle_authentication.Action S)) (server : S) (element : B)
+  (time : Std.Usize) : Prop :=
+  merkle_authentication.client_authentication ExecutionInst actions server
+  element time
+  ⦃ res =>
+  (merkle_authentication.client_authentication.post ExecutionInst actions
+  server element time res).holds ⦄
 
 end examples

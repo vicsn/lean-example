@@ -1,7 +1,7 @@
 module
 
-public import Examples.Nsl.Lawful
-public import Examples.Nsl.Model
+public import RustExamples.Nsl.Lawful
+public import RustExamples.Nsl.Model
 
 /-! # The extracted code computes the model
 

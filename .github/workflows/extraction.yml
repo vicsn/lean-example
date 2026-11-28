@@ -1,7 +1,7 @@
 name: Aeneas extraction
 
 # Re-runs Charon and Aeneas with the pinned release and fails if the committed
-# Lean in examples/lean-src/Examples/Gen differs from what they produce, so the
+# Lean in examples/lean-src/RustExamples/Gen differs from what they produce, so the
 # proofs are known to be about the Rust code in the tree.
 
 on:
@@ -29,6 +29,6 @@ jobs:
 
       - name: Check the committed extraction is unchanged
         run: |
-          git status --porcelain -- examples/lean-src/Examples/Gen
-          git diff -- examples/lean-src/Examples/Gen
-          test -z "$(git status --porcelain -- examples/lean-src/Examples/Gen)"
+          git status --porcelain -- examples/lean-src/RustExamples/Gen
+          git diff -- examples/lean-src/RustExamples/Gen
+          test -z "$(git status --porcelain -- examples/lean-src/RustExamples/Gen)"

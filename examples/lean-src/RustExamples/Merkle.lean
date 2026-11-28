@@ -1,9 +1,9 @@
 module
 
-public import Examples.Gen.Specs
-public import Examples.Merkle.Lawful
-import Examples.Merkle.Completeness
-import Examples.Merkle.Binding
+public import RustExamples.Gen.Specs
+public import RustExamples.Merkle.Lawful
+import RustExamples.Merkle.Completeness
+import RustExamples.Merkle.Binding
 
 /-! # What is proved about the Merkle tree
 

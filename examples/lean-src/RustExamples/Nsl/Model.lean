@@ -1,6 +1,6 @@
 module
 
-public import Examples.Gen.Funs
+public import RustExamples.Gen.Funs
 
 /-! # A pure model of the NSL worlds
 
@@ -11,7 +11,7 @@ it is modelled once, as the total function `pstep` over a pure environment
 the encryption scheme and the tapes are pure functions (`PkeF`, `TapeF`).
 `prun` and `pgame` model `nsl.run` and `nsl.secrecy_game`.
 
-`Examples.Nsl.Refine` shows that the extracted code computes these models.
+`RustExamples.Nsl.Refine` shows that the extracted code computes these models.
 Every other proof is about the models.
 -/
 

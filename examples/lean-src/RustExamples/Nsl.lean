@@ -1,29 +1,29 @@
 module
 
-public import Examples.Nsl.Lawful
-public import Examples.Nsl.Probability
-import Examples.Nsl.Secrecy
-import Examples.Nsl.Faithful
-import Examples.Nsl.Attack
-import Examples.Nsl.Ideal
-import Examples.Nsl.Bound
+public import RustExamples.Nsl.Lawful
+public import RustExamples.Nsl.Probability
+import RustExamples.Nsl.Secrecy
+import RustExamples.Nsl.Faithful
+import RustExamples.Nsl.Attack
+import RustExamples.Nsl.Ideal
+import RustExamples.Nsl.Bound
 
 /-! # What is proved about Needham–Schroeder–Lowe
 
 This module is the audit surface for `examples/src/nsl.rs`: it states every
 theorem we prove about it, and it is the only NSL proof module that `Examples`
-exports. The proofs live in `Examples.Nsl.*`, imported privately.
+exports. The proofs live in `RustExamples.Nsl.*`, imported privately.
 
 To audit, read:
 * `examples/src/nsl.rs`: the protocol (`step`), the three worlds (`World` over
   `RealOracle` or `IdealOracle`, and `Symbolic`), the property functions
   `secrecy` and `faithful`, the game `secrecy_game` and the adversary
-  `LoweAttack`, whose Aeneas translations in `Examples.Gen.Funs` the theorems
+  `LoweAttack`, whose Aeneas translations in `RustExamples.Gen.Funs` the theorems
   below are about;
-* `Examples.Nsl.Lawful`: the only assumptions on the encryption and the tapes
+* `RustExamples.Nsl.Lawful`: the only assumptions on the encryption and the tapes
   (the functions never fail, ciphertext `==` is equality, and for the attack,
   decryption inverts encryption). None of them is a security assumption;
-* `Examples.Nsl.Probability`: the definitions of the probability space
+* `RustExamples.Nsl.Probability`: the definitions of the probability space
   (uniform tapes), the IND-CCA advantage and the reduction;
 * the statements below.
 
@@ -45,8 +45,8 @@ The structure of the argument:
 4. **The bound** (`nsl_secrecy`).
 
 The proofs do not reason about the extracted code directly.
-`Examples.Nsl.Model` defines the protocol, the worlds and the game as pure
-functions, `Examples.Nsl.Refine` shows that the extracted code computes them,
+`RustExamples.Nsl.Model` defines the protocol, the worlds and the game as pure
+functions, `RustExamples.Nsl.Refine` shows that the extracted code computes them,
 and the other modules are about the pure functions.
 
 Two remarks on reading the bound. `advCCA` is the advantage in the multi-user

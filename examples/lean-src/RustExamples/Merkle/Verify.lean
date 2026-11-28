@@ -1,7 +1,7 @@
 module
 
-public import Examples.Merkle.Lawful
-public import Examples.Merkle.Model
+public import RustExamples.Merkle.Lawful
+public import RustExamples.Merkle.Model
 
 /-! # What the verifier computes
 
@@ -12,7 +12,7 @@ proof, honest or not, so completeness and binding both build on it.
 
 The hash functions of a lawful `H` never fail. `leafF`, `nodeF` and `sizeF`
 are those functions with the `Result` removed, and the model in
-`Examples.Merkle.Model` is used with `nodeF hH` as its node hash.
+`RustExamples.Merkle.Model` is used with `nodeF hH` as its node hash.
 -/
 
 @[expose] public section
@@ -117,7 +117,7 @@ noncomputable def innerF (size index : Std.Usize) (data : Slice Std.U8) (proof :
   step*
 
 /-- A program that satisfies the spec `b = true` equals `ok true`, the form
-in which `Examples.Merkle` states the theorems. -/
+in which `RustExamples.Merkle` states the theorems. -/
 theorem eq_ok_of_spec {m : Result Bool} (h : m ⦃ b => b = true ⦄) : m = ok true := by
   cases m <;> simp_all
 

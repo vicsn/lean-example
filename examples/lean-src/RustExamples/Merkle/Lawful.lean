@@ -1,6 +1,6 @@
 module
 
-public import Examples.Gen.Funs
+public import RustExamples.Gen.Funs
 
 /-! Assumptions about the `Hash` implementation that the Merkle proofs rely on.
 

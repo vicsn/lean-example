@@ -1,6 +1,6 @@
 module
 
-public import Examples.Gen.Funs
+public import RustExamples.Gen.Funs
 
 /-! Assumptions about the `Pke` and `Tape` implementations that the NSL proofs
 rely on.

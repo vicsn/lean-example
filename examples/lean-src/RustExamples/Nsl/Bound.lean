@@ -1,21 +1,21 @@
 module
 
-public import Examples.Nsl.Probability
-import Examples.Nsl.Refine
-import Examples.Nsl.Ideal
+public import RustExamples.Nsl.Probability
+import RustExamples.Nsl.Refine
+import RustExamples.Nsl.Ideal
 
 /-! # The concrete security bound for NSL secrecy
 
 For every total `Pke` with finite `Seed` and `Coins`, every adversary (any
 `Adversary` instance with any initial state) and every number of queries `q`,
-with both tapes uniform (see `Examples.Nsl.Probability`):
+with both tapes uniform (see `RustExamples.Nsl.Probability`):
 
 1. **Real → ideal** (`game_hop`). The real and the ideal secrecy games are the
    reduction `reduction E Adv adv lowe q` (the secrecy game with the oracle
    left abstract) run with `RealOracle` and with `IdealOracle`. Their winning
    probabilities differ by exactly the multi-user IND-CCA advantage of that
    reduction.
-2. **Ideal** (`idealWin_le`, in `Examples.Nsl.Ideal`). With Lowe's check, the
+2. **Ideal** (`idealWin_le`, in `RustExamples.Nsl.Ideal`). With Lowe's check, the
    adversary wins the ideal game with probability at most `q (q + 1) / 2^64`.
 
 `secrecy_bound` adds them up.

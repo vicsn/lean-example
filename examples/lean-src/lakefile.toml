@@ -1,11 +1,16 @@
 name = "examples"
-defaultTargets = ["Examples"]
+defaultTargets = ["RustExamples"]
 
-# Native models used by the proof scripts. Examples.Hax adapts hax-step to this revision.
+# Native models used by the proof scripts. RustExamples.Hax adapts hax-step to this revision.
 [[require]]
 name = "aeneas"
 git = { url = "https://github.com/AeneasVerif/aeneas", subDir = "backends/lean" }
 rev = "8f4466db9f0d59267b8e76b54473a21a005cf7be"
 
+[[require]]
+name = "dylean"
+git = "https://github.com/BobDyLean/dylean.git"
+rev = "2254f7d1943acb33008e6018130aef34438dd6b2"
+
 [[lean_lib]]
-name = "Examples"
+name = "RustExamples"

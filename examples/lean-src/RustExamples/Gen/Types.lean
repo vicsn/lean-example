@@ -2,7 +2,7 @@
 -- [examples]: type definitions
 module
 public import Aeneas
-public import Examples.Hax
+public import RustExamples.Hax
 @[expose] public section
 open Aeneas Aeneas.Std RustM ControlFlow Error
 set_option linter.dupNamespace false
@@ -96,6 +96,149 @@ inductive merkle.Collision (D : Type _) where
 | Leaf : Slice Std.U8 → Slice Std.U8 → merkle.Collision D
 | Node : D → D → D → D → merkle.Collision D
 | Size : D → Std.Usize → D → Std.Usize → merkle.Collision D
+
+/-- [examples::merkle_authentication::roles::Client]
+    Source: 'examples/src/merkle_authentication/roles.rs', lines 4:0-17:1
+    Visibility: public -/
+@[discriminant isize]
+inductive merkle_authentication.roles.Client where
+| LookupVerificationKey : merkle_authentication.roles.Client
+| ReceiveSignedRoot : merkle_authentication.roles.Client
+| ReceiveOpening : merkle_authentication.roles.Client
+| VerifyRootSignature : merkle_authentication.roles.Client
+| CheckRootFromPath : merkle_authentication.roles.Client
+| CheckIndexBounds : merkle_authentication.roles.Client
+| LogClientAccept : merkle_authentication.roles.Client
+
+/-- [examples::merkle_authentication::roles::Server]
+    Source: 'examples/src/merkle_authentication/roles.rs', lines 32:0-40:1
+    Visibility: public -/
+@[discriminant isize]
+inductive merkle_authentication.roles.Server where
+| ReceiveAndAuthenticateEachElement : merkle_authentication.roles.Server
+| LookupSigningKey : merkle_authentication.roles.Server
+| ComputeRootAndLength : merkle_authentication.roles.Server
+| GenerateSigningNonce : merkle_authentication.roles.Server
+| SignRootAndLength : merkle_authentication.roles.Server
+| PublishSignedRoot : merkle_authentication.roles.Server
+| StoreElements : merkle_authentication.roles.Server
+
+/-- [examples::merkle_authentication::roles::Prover]
+    Source: 'examples/src/merkle_authentication/roles.rs', lines 55:0-58:1
+    Visibility: public -/
+@[discriminant isize]
+inductive merkle_authentication.roles.Prover where
+| LoadServerElements : merkle_authentication.roles.Prover
+| SendOpeningForIndex : merkle_authentication.roles.Prover
+
+/-- [examples::merkle_authentication::roles::Recipe]
+    Source: 'examples/src/merkle_authentication/roles.rs', lines 67:0-76:1
+    Visibility: public -/
+@[discriminant isize]
+inductive merkle_authentication.roles.Recipe where
+| Receive : Std.Usize → merkle_authentication.roles.Recipe
+| Literal : alloc.vec.Vec Std.U8 → merkle_authentication.roles.Recipe
+| Concat :
+  merkle_authentication.roles.Recipe →
+  merkle_authentication.roles.Recipe →
+  merkle_authentication.roles.Recipe
+| Left :
+  merkle_authentication.roles.Recipe →
+  merkle_authentication.roles.Recipe
+| Right :
+  merkle_authentication.roles.Recipe →
+  merkle_authentication.roles.Recipe
+| Hash :
+  merkle_authentication.roles.Recipe →
+  merkle_authentication.roles.Recipe
+| VerificationKey :
+  merkle_authentication.roles.Recipe →
+  merkle_authentication.roles.Recipe
+| Sign :
+  merkle_authentication.roles.Recipe →
+  merkle_authentication.roles.Recipe →
+  merkle_authentication.roles.Recipe →
+  merkle_authentication.roles.Recipe
+
+/-- Trait declaration: [examples::merkle_authentication::roles::Deductions]
+    Source: 'examples/src/merkle_authentication/roles.rs', lines 78:0-87:1 -/
+structure merkle_authentication.roles.Deductions (Self : Type _) (Self_Bytes :
+  Type _) where
+  receive : Self → Std.Usize → RustM (Option Self_Bytes)
+  literal : Self → Slice Std.U8 → RustM Self_Bytes
+  concat : Self → Self_Bytes → Self_Bytes → RustM Self_Bytes
+  split : Self → Self_Bytes → Bool → RustM (Option Self_Bytes)
+  hash : Self → Self_Bytes → RustM Self_Bytes
+  vk : Self → Self_Bytes → RustM Self_Bytes
+  sign : Self → Self_Bytes → Self_Bytes → Self_Bytes → RustM Self_Bytes
+
+/-- [examples::merkle_authentication::Observation]
+    Source: 'examples/src/merkle_authentication.rs', lines 31:0-36:1
+    Visibility: public -/
+@[discriminant isize]
+inductive merkle_authentication.Observation where
+| Other : merkle_authentication.Observation
+| Authenticated : merkle_authentication.Observation
+| KeyCompromised : merkle_authentication.Observation
+| Accepted : merkle_authentication.Observation
+
+/-- [examples::merkle_authentication::Event]
+    Source: 'examples/src/merkle_authentication.rs', lines 40:0-50:1 -/
+@[discriminant isize]
+inductive merkle_authentication.Event where
+| Other : merkle_authentication.Event
+| ServerAuthenticated : Bool → Bool → merkle_authentication.Event
+| ClientAccept : Bool → Bool → merkle_authentication.Event
+
+/-- Trait declaration: [examples::merkle_authentication::History]
+    Source: 'examples/src/merkle_authentication.rs', lines 71:0-73:1 -/
+structure merkle_authentication.History (Self : Type _) (S : Type _) (B :
+  Type _) where
+  «at» : Self → S → B → Std.Usize → RustM
+    merkle_authentication.Observation
+
+/-- [examples::merkle_authentication::Action]
+    Source: 'examples/src/merkle_authentication.rs', lines 99:0-127:1
+    Visibility: public -/
+@[discriminant isize]
+inductive merkle_authentication.Action (S : Type _) where
+| Send : merkle_authentication.roles.Recipe → merkle_authentication.Action S
+| Random : Std.Usize → merkle_authentication.Action S
+| GenerateKey : S → merkle_authentication.Action S
+| CompromiseKey : Std.Usize → merkle_authentication.Action S
+| CompromiseState : Std.Usize → merkle_authentication.Action S
+| Authenticate :
+  S →
+  alloc.vec.Vec Std.Usize →
+  Std.Usize →
+  merkle_authentication.Action S
+| ProveInclusion :
+  S →
+  Std.Usize →
+  Std.Usize →
+  merkle_authentication.Action S
+| CheckInclusion :
+  S →
+  Std.Usize →
+  Std.Usize →
+  Std.Usize →
+  merkle_authentication.Action S
+
+/-- Trait declaration: [examples::merkle_authentication::Execution]
+    Source: 'examples/src/merkle_authentication.rs', lines 131:0-141:1 -/
+structure merkle_authentication.Execution (Self : Type _) (S : Type _) (B :
+  Type _) where
+  HistoryInst : merkle_authentication.History Self S B
+  empty : RustM Self
+  send : Self → merkle_authentication.roles.Recipe → RustM Self
+  random : Self → Std.Usize → RustM Self
+  generate_key : Self → S → RustM Self
+  compromise_key : Self → Std.Usize → RustM Self
+  compromise_state : Self → Std.Usize → RustM Self
+  authenticate : Self → S → Slice Std.Usize → Std.Usize → RustM Self
+  prove_inclusion : Self → S → Std.Usize → Std.Usize → RustM Self
+  check_inclusion : Self → S → Std.Usize → Std.Usize → Std.Usize →
+    RustM Self
 
 /-- [examples::nsl::Msg]
     Source: 'examples/src/nsl.rs', lines 67:0-74:1

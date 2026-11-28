@@ -1,14 +1,14 @@
 module
 
-public import Examples.Merkle.Lawful
-import Examples.Merkle.Verify
+public import RustExamples.Merkle.Lawful
+import RustExamples.Merkle.Verify
 
 /-! Completeness: the honest proof for every leaf verifies.
 
 Each function of `Tree` gets a `@[step]` spec relating it to the model in
-`Examples.Merkle.Model`: `Tree::new` builds `levelsFrom` of the leaf hashes,
+`RustExamples.Merkle.Model`: `Tree::new` builds `levelsFrom` of the leaf hashes,
 `Tree::root` returns the size commitment of the first node of `topOf`, and
-`Tree::proof` returns `proofFrom`. `Examples.Merkle.Verify` shows that
+`Tree::proof` returns `proofFrom`. `RustExamples.Merkle.Verify` shows that
 `verify` computes `innerRootF`, and `Model.innerRootF_proofFrom` shows that
 `innerRootF` of the honest proof is the first node of `topOf`.
 -/
